@@ -33,6 +33,7 @@ app.get('/todos',(req, res)=>{
     Todo.find().then((todos)=>{
         res.send({todos});
     },(err)=>{
+        console.log(e);
         res.status(400).send(err);
     });
 });
