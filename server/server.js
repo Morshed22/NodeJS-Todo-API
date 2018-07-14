@@ -95,6 +95,27 @@ app.patch('/todos/:id', (req, res)=>{
     });
 });
 
+///user **************************************************
+// config POST route: /users
+app.post('/users', (req, res) => {
+
+    // allow only a subset of User model to be accessible by a user
+    var body = _.pick(req.body, ['email', 'password']);
+  
+    // create a new User model
+    var user = new User(body);
+    // save the new model to the DB
+    user.save().then(() => {
+      return user.generateAuthToken();
+    }).then((token) => {
+      
+      res.header('x-auth', token).send(user);
+    }).catch((e) => {
+      res.status(400).send(e);
+    });
+  
+  });
+
 
 app.listen( port ,()=>{
     console.log(`Started up at port ${port}`);
