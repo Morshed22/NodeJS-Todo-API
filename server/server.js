@@ -80,7 +80,7 @@ app.delete('/todos/:id',authenticate,(req, res)=>{
     }).catch((e)=>{
         res.status(400).send();
    });
-});
+}); 
 
 app.patch('/todos/:id',authenticate, (req, res)=>{
     var id = req.params.id;

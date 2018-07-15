@@ -324,7 +324,7 @@ describe('POST/users/login', ()=>{
                     return done(err)
                 }
           User.findById(users[1]._id).then((user)=>{
-              expect(user.tokens[1]).toMatchObject({ 
+              expect(user.toObject().tokens[1]).toMatchObject({ 
                 access: 'auth',
                 token: res.headers['x-auth']
               });
@@ -333,11 +333,11 @@ describe('POST/users/login', ()=>{
        });
     });
   
-    it('should reject invalid login', (done)=>{
+    it('should reject invalid login', (done)=>{ 
           
         request(app)
           .post('/users/login')
-          .send({email:users[1].email,
+          .send({email:users[1].email, 
               password : users[1].password + 1
               })
           .expect(400)
