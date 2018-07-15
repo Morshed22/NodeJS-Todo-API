@@ -159,13 +159,13 @@ describe('DELETE/todos/:id',()=>{
           .end(done);
       });
     
-//       it('should return 404 for non object Id is invalid', (done)=>{
-//         request(app)
-//         .delete('/todos/123abc')
-//         .set('x-auth',users[1].tokens[0].token)
-//         .expect(404)
-//         .end(done);
-//   });
+      it('should return 404 for non object Id is invalid', (done)=>{
+        request(app)
+        .delete('/todos/123abc')
+        .set('x-auth',users[1].tokens[0].token)
+        .expect(404)
+        .end(done);
+  });
     
 });
 
