@@ -82,12 +82,15 @@ app.delete('/todos/:id',authenticate,(req, res)=>{
    });
 }); 
 
-app.patch('/todos/:id',authenticate, (req, res)=>{
+app.patch('/todos/:id',authenticate, async (req, res)=>{
+
+
     var id = req.params.id;
     var body = _.pick(req.body,['text', 'completed']);
     if (!ObjectID.isValid(id)){
         res.status(404).send();
     }
+
     if(_.isBoolean(body.completed) && body.completed){
         body.completedAt = new Date().getTime();
     }else{
@@ -95,20 +98,21 @@ app.patch('/todos/:id',authenticate, (req, res)=>{
         body.completedAt  = null;
     }
 
-    Todo.findOneAndUpdate ({
-        _id : id,
-        _creator:req.user._id
-       }, 
-        {$set : body},
-        {new: true }
-    ).then((todo)=>{
-        if (!todo){
-            return res.status(404).send();
-        }
-        res.send({todo});
-    }).catch((e)=> {
+    try {
+        const todo =  await Todo.findOneAndUpdate ({
+            _id : id,
+            _creator:req.user._id
+           }, 
+            {$set : body},
+            {new: true })
+            if (!todo){
+                return res.status(404).send();
+            }
+            res.send({todo});
+    } catch (e) {
         res.status(400).send();
-    });
+    }
+
 });
 
 ///user **************************************************
@@ -148,12 +152,16 @@ app.post('/users/login', (req, res)=>{
     });
 });
 
-app.delete('/users/me/token', authenticate,(req, res)=>{
-    req.user.removeToken(req.token).then(()=>{
+app.delete('/users/me/token', authenticate, async (req, res)=>{
+     
+    try {
+        await req.user.removeToken(req.token);
         res.status(200).send()
-    }, ()=>{
+    } catch (e) {
         res.status(400).send();
-    });
+    }
+
+   
 });
 
 app.listen( port ,()=>{
